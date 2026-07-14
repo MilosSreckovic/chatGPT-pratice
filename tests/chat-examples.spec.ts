@@ -56,6 +56,61 @@ test.describe('Playwright live-coding cheat sheet', () => {
   });
 });
 
+test.describe('Playwright live coding podsetnik', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('https://example.com');
+  });
+
+  test('should complete common UI actions', async ({ page }) => {
+    // Moderni lokatori
+    const form = page.locator('form').filter({ hasText: 'Login' });
+    const email = form.getByLabel('Email address');
+    const password = form.getByLabel('Password');
+    const loginButton = form.getByRole('button', { name: 'Login' });
+
+    // Popunjavanje forme
+    await email.fill('test@example.com');
+    await password.fill('password123');
+    await loginButton.click();
+
+    // Najčešće asercije
+    await expect(page).toHaveURL(/dashboard/);
+    await expect(page.getByText('Welcome')).toBeVisible();
+    await expect(email).toHaveValue('test@example.com');
+
+    // Dropdown
+    const countryDropdown = page.getByLabel('Country');
+    await countryDropdown.selectOption({ label: 'Serbia' });
+    await expect(countryDropdown).toHaveValue('RS');
+
+    // Checkbox i radio button
+    const termsCheckbox = page.getByRole('checkbox', { name: 'Accept terms' });
+    await termsCheckbox.check();
+    await expect(termsCheckbox).toBeChecked();
+
+    await page.getByRole('radio', { name: 'Standard delivery' }).check();
+
+    // Pronalaženje tačnog elementa iz liste
+    const product = page
+      .locator('[data-test="product"]')
+      .filter({ has: page.getByText('Product name', { exact: true }) });
+
+    await expect(product).toHaveCount(1);
+    await expect(product.getByText('Product name')).toBeVisible();
+
+    // Čitanje i provera cene
+    const priceText = await product.getByTestId('product-price').textContent();
+    expect(priceText).not.toBeNull();
+
+    const price = Number(priceText!.replace('$', '').trim());
+    expect(price).toBeGreaterThan(0);
+
+    await product.getByRole('button', { name: 'Add to cart' }).click();
+    await expect(page.getByTestId('cart-count')).toHaveText('1');
+   });
+});
+
+
 /*
 Najčešće zamke:
 - Ne koristi waitForTimeout(); čekaj element, URL, response ili web-first assertion.
