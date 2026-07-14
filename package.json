@@ -1,0 +1,18 @@
+{
+  "name": "playwright-live-coding",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "live-coding-auto": "playwright test tests/live-coding-auto.spec.ts --headed",
+    "live-coding-sauce": "playwright test tests/live-coding-sauce.spec.ts --headed"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.61.1",
+    "@types/node": "^26.1.1"
+  }
+}
